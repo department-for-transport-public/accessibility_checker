@@ -4,8 +4,7 @@ This is the repository for the R code for the ODS/XLSX spreadsheet accessibility
 
 Once launched the Shiny app will look like this:
 
-![image](https://github.com/department-for-transport-public/accessibility_checker/assets/84339173/7bf1c444-a602-46fe-8a12-d5a05041ddda)
-
+![image](https://github.com/department-for-transport-public/accessibility_checker/assets/84339173/dd42e3fc-f771-4b32-954d-4e11af667762)
 
 Users can select either the ODS or XLSX tabs depending on the format of their files. They can then use the file uploader format to import one or more files into the app. It will then check the content of each file against the various accessibility checks; this may take a little while especially if files are large.
 
