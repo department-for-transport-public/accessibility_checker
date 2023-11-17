@@ -83,20 +83,28 @@ ods_UI <- function(id, label) {
                     tabPanel("Formatting",
                              h2("All text is set to sans serif font (e.g. Arial)"),
                              spinDT(ns("font_family")),
+                             br(),
                              h2("All text is wrapped and visible"),
                              spinDT(ns("wrapped")),
+                             br(),
                              h2("Table title is set to 'Heading 1'"),
                              spinDT(ns("headings")),
+                             br(),
                              h3("(Recommended) Font is at least size 10"),
                              spinDT(ns("font_size")),
+                             br(),
                              h3("(Recommended) Font colour is 'automatic'"),
                              spinDT(ns("font_colour")),
+                             br(),
                              h3("(Recommended) No background fill"),
                              spinDT(ns("background_fill")),
+                             br(),
                              h3("(Recommended) Text is horizontal"),
                              spinDT(ns("text_horizontal")),
+                             br(),
                              h3("(Recommended) Italics or underlining are not used for emphasis"),
-                             spinDT(ns("italic_underline"))
+                             spinDT(ns("italic_underline")),
+                             br()
                              
                     ), #End of panel
                     
@@ -106,9 +114,22 @@ ods_UI <- function(id, label) {
                              br(),
                              h3("(Recommended) Dates are written in order: date, month, year."),
                              spinDT(ns("date_style")),
+                             br(),
                              h3("(Recommended) Thousands are separated by commas"),
-                             spinDT(ns("comma_format"))
+                             spinDT(ns("comma_format")),
+                             br()
                     ), #End of panel
+                    
+                    tabPanel("Other checks",
+                             h3("Author metadata is removed"),
+                             spinDT(ns("metadata")),
+                             br(),
+                             ##No "dodgy stats" comments here thnx 
+                             h3("All comments removed"),
+                             #spinDT(ns("date_style")),
+                             br()
+                    ), #End of panel
+                    
                     
                     tabPanel("Manual checks",
                              h2("The following mandatory checks cannot yet be done in this tool. 
@@ -972,6 +993,38 @@ ods_Server <- function(id) {
           dplyr::mutate(check = grepl("[,]\\d{3}", cell_content)) %>%
           dplyr::filter(check == FALSE) %>%
           datatbl()
+      })
+      
+      ##Stuff that isn't strictly accessibility but we check anyway
+      output$metadata <- DT::renderDataTable({
+        
+        ##Extract names from metadata if they exist
+        extract_names <- function(meta){
+          dplyr::bind_rows(
+            
+            tibble::tibble(
+              "type" = "edited_by" ,
+              "name" = null_s(extract_meta(meta, "dc:creator"))
+              
+            ),
+            
+            tibble::tibble(
+              "type" = "created_by" ,
+              "name" = null_s(extract_meta(meta, "meta:initial-creator"))
+              
+            )
+            
+          )
+        }
+        
+        purrr::map_df(.x = book_meta(),
+                      .f = extract_names,
+                      .id = "Workbook") %>%
+          dplyr::mutate(check = name == "") %>%
+          datatbl()
+        
+       
+        
       })
       
       ##Help message popup-----------------------------

@@ -62,3 +62,15 @@ null_s <- function(x){
   
   return(x)
 }
+
+##Extract metadata content
+extract_meta <- function(x, node){
+  
+  x %>%
+    xml2::xml_children() %>%
+    xml2::xml_child(node) %>%
+    xml2::xml_contents() %>%
+    as_list() %>%
+    unlist()
+  
+}
