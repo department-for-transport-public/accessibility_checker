@@ -121,6 +121,7 @@ ods_UI <- function(id, label) {
                     ), #End of panel
                     
                     tabPanel("Other checks",
+                             h2("These checks are not mandatory from an accessibility perspective, but include checks of other aspects of published tables you may find useful"),
                              h3("Author metadata is removed"),
                              spinDT(ns("metadata")),
                              br(),
