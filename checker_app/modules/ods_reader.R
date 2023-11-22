@@ -127,7 +127,7 @@ ods_UI <- function(id, label) {
                              br(),
                              ##No "dodgy stats" comments here thnx 
                              h3("All comments removed"),
-                             #spinDT(ns("date_style")),
+                             spinDT(ns("comment_boxes")),
                              br()
                     ), #End of panel
                     
@@ -253,7 +253,7 @@ ods_Server <- function(id) {
         files <- input$ods_files$datapath
         names(files) <- input$ods_files$name
         
-        ##List of all content sheets
+        ##List of all style sheets
         purrr::map(.x = files,
                    .f = extract_xml,
                    content_type = "styles.xml")
@@ -270,7 +270,7 @@ ods_Server <- function(id) {
         files <- input$ods_files$datapath
         names(files) <- input$ods_files$name
         
-        ##List of all content sheets
+        ##List of all meta sheets
         purrr::map(.x = files,
                    .f = extract_xml,
                    content_type = "meta.xml")
@@ -996,7 +996,9 @@ ods_Server <- function(id) {
           datatbl()
       })
       
-      ##Stuff that isn't strictly accessibility but we check anyway
+      ##Stuff that isn't strictly accessibility but we check anyway-------------
+      
+      ##Names in the metadata
       output$metadata <- DT::renderDataTable({
         
         ##Extract names from metadata if they exist
@@ -1027,6 +1029,30 @@ ods_Server <- function(id) {
        
         
       })
+      
+      
+      ##Comments and annotations left in the workbook
+      output$comment_boxes <- DT::renderDataTable({
+        
+        ##Extract comments from workbook if they exist
+        extract_comments <- function(meta){
+          
+          tibble(comment = xml_find_all(meta, "//office:annotation") %>%
+                   xml_text() %>%
+                   null_s())
+          
+        }
+        
+        purrr::map_df(.x = book_content(),
+                      .f = extract_comments,
+                      .id = "Workbook") %>%
+          dplyr::mutate(check = comment == "") %>%
+          datatbl()
+        
+        
+      })
+      
+     
       
       ##Help message popup-----------------------------
       observeEvent(input$show, {
