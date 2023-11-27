@@ -23,7 +23,7 @@ shinyUI(
       title = "Spreadsheet Accessibility Checker",
       tabPanel("ODS",
                ods_UI("ods", "ods")),#End of tab panel
-      tabPanel("XLXS",
+      tabPanel("XLSX",
                xlsx_UI("xlsx", "xlsx")
       ), #End of tab panel
        tabPanel("Instructions",

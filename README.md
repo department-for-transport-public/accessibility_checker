@@ -17,3 +17,9 @@ To use this app in your own infrastructure, fork and clone it from Github. The l
 You will need to host it on a system which has a backend server (e.g. shinyapps.io or a Posit connect instance).
 
 Once hosted, the app does not save or copy data to any other location, the data is not stored in the app beyond the end of a session and is not accessible to any other user.
+
+## To run locally
+
+* Open the cloned repository in R
+* Run `renv::restore()` in your console and select Y when prompted; this will install all of the files you need to run the dashboard.
+* In your console run: `shiny::runApp("checker_app/", launch.browser = TRUE)` to launch the app.
