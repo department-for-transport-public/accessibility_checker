@@ -608,7 +608,7 @@ ods_Server <- function(id) {
                            count_of_cells = n()) %>%
           ##Remove anything that's Arial, we don't need to list every cell
           dplyr::filter(!is.na(sheet)) %>%
-          dplyr::mutate(cells = case_when(font == "Arial" ~ "multiple cells",
+          dplyr::mutate(cells = case_when(grepl("Arial", font) ~ "multiple cells",
                                           TRUE ~ cells),
                         check = cells == "multiple cells") %>%
           datatbl()
@@ -708,7 +708,9 @@ ods_Server <- function(id) {
           dplyr::filter(!is.na(sheet)) %>%
           dplyr::mutate(cells = case_when(is.na(rotation) ~ "multiple cells",
                                           TRUE ~ cells),
-                        check = is.na(rotation),
+                        check = case_when(is.na(rotation) ~ TRUE,
+                                          rotation == 0 ~ TRUE,
+                                          TRUE ~ FALSE),
                         rotation = dplyr::case_when(is.na(rotation) ~ "horizontal",
                                                     TRUE ~ rotation)) %>%
           datatbl()
@@ -723,8 +725,9 @@ ods_Server <- function(id) {
                            count_of_cells = n()) %>% 
           dplyr::filter(!is.na(sheet)) %>%
           dplyr::mutate(cells = case_when(is.na(font_style) & is.na(underline) ~ "multiple cells",
+                                          font_style == "normal" & is.na(underline) ~ "multiple cells",
                                           TRUE ~ cells),
-                        check = is.na(font_style) & is.na(underline)) %>%
+                        check = cells == "multiple cells") %>%
           datatbl()
         
       })
